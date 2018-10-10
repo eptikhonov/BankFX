@@ -11,17 +11,28 @@ public class BankAccount {
 	}
 
 	public void deposit(double amount) {
-		balance += amount;
-		transactions++;
+		// check for negative deposit amounts
+		if (amount < 0) {
+			throw new IllegalArgumentException("Please enter a positive deposit amount");
+		} else {
+			balance += amount;
+			transactions++;
+		}
 	}
 
 	public void withdraw(double amount) {
 
-		// charge $1 more if balance is less than a thousand
-		if (balance < 1000) amount += 1.0;
+		// check for negative withdraw amounts
+		if (amount < 0) {
+			throw new IllegalArgumentException("Please enter a positive withdraw amount");
+		} else {
+			// charge $1 more if balance is less than a thousand
+			if (balance < 1000) amount += 1.0;
 
-		balance -= amount;
-		transactions++;
+			balance -= amount;
+			transactions++;
+		}
+
 	}
 	public double getBalance() {
 		return balance;
@@ -31,4 +42,5 @@ public class BankAccount {
 	public static int transactions() {
 		return transactions;
 	}
+	
 }
