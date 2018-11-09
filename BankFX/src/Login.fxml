@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="267.0" prefWidth="277.0"
+	xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="LoginController">
+	<children>
+		<TextField fx:id="username_txtfld" layoutX="56.0"
+			layoutY="96.0" prefHeight="27.0" prefWidth="166.0"
+			promptText="Username" />
+		<PasswordField fx:id="password_txtfld" layoutX="56.0"
+			layoutY="135.0" prefHeight="27.0" prefWidth="166.0"
+			promptText="Password" />
+		<Button fx:id="login_btn" layoutX="56.0" layoutY="182.0"
+			mnemonicParsing="false" prefHeight="27.0" prefWidth="166.0"
+			text="Login" />
+		<Button fx:id="register_btn" layoutX="56.0" layoutY="219.0"
+			mnemonicParsing="false" prefHeight="27.0" prefWidth="166.0"
+			text="Register" />
+		<Text layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0"
+			text="BankFX" textAlignment="CENTER" wrappingWidth="277.0">
+			<font>
+				<Font size="40.0" />
+			</font>
+		</Text>
+		<Text fx:id="displayError_txt" fill="RED" layoutX="42.0"
+			layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0"
+			textAlignment="CENTER" wrappingWidth="194.0" />
+	</children>
+</AnchorPane>
