@@ -10,16 +10,16 @@ public class LetterCounter {
 		System.out.println("Please enter text to be searched: ");
 
 		System.out.println();
-		textEntered = input.nextLine();
+		textEntered = input.nextLine().toLowerCase();
 
 		//textEntered = "Mr and Mrs Dursley of Number 4 Privet Drive were proud to say that they were perfectly normal, thank you very much. They were the last people you’d ever expect to be involved in anything strange or mysterious, because they just didn’t hold with such nonsense.".toLowerCase();
 
 		input.close();
 
-		// create array mapping of characters
+		// create array mapping of characters spots
 		int[] counts = new int[(int) Character.MAX_VALUE];
 
-		// add the number of occurrences of each character into array
+		// add the number of occurrences of each character spot into array
 		for (int i = 0; i < textEntered.length(); i++) {
 			char charAt = textEntered.charAt(i); // current position in textEntered
 			counts[(int) charAt]++; // add 1 to place in array
