@@ -20,4 +20,10 @@
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>sqlitejdbc</name>
+			<value>file:/Users/e/Desktop/Repositories/CS316/BankFX/sqlite-jdbc-3.23.1.jar</value>
+		</variable>
+	</variableList>
 </projectDescription>

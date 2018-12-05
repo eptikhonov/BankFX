@@ -3,8 +3,14 @@ import java.util.Optional;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -19,8 +25,7 @@ public class BankAccount {
 	protected double accountBalance;
 	protected int accountID;
 	protected String accountType;
-
-	Text accountDeleteText;
+	protected Text accountBalanceText;
 
 	public BankAccount(String accountType, int accountID, double accountBalance) {
 
@@ -56,15 +61,8 @@ public class BankAccount {
 				Optional<String> amount = dialog.showAndWait();
 				if (amount.isPresent()) {
 					Double amountAsDouble = Double.valueOf(amount.get());
-					// check for negative deposit amounts
-					if (amountAsDouble < 0) {
-						throw new IllegalArgumentException("Please enter a positive deposit amount");
-					} else {
-						accountBalance += amountAsDouble;
-						// TODO: must update window or something (make a function)
-						System.out.println("$"+amountAsDouble+" deposited into Account #"+accountID+".");
-						System.out.println("Total balance: $"+accountBalance);
-					}
+
+					deposit(amountAsDouble);
 				}
 			}
 		});
@@ -77,7 +75,7 @@ public class BankAccount {
 		Button withdrawButton = new Button();
 		withdrawButton.setText("Withdraw");
 		withdrawButton.setCursor(Cursor.HAND);
-		
+
 		withdrawButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
@@ -90,18 +88,11 @@ public class BankAccount {
 				if (amount.isPresent()) {
 					Double amountAsDouble = Double.valueOf(amount.get());
 					// check for negative withdrawal amounts
-					if (amountAsDouble < 0) {
-						throw new IllegalArgumentException("Please enter a positive withdraw amount");
-					} else {
-						accountBalance -= amountAsDouble;
-						// TODO: must update window or something (make a function)
-						System.out.println("$"+amountAsDouble+" withdrawn from Account #"+accountID+".");
-						System.out.println("Total balance: $"+accountBalance);
-					}
+					withdraw(amountAsDouble);
 				}
 			}
 		});
-		
+
 		withdrawButton.setPrefHeight(22.0);
 		withdrawButton.setPrefWidth(159.0);
 		withdrawButton.setLayoutX(211.0);
@@ -110,34 +101,56 @@ public class BankAccount {
 		Button transferButton = new Button();
 		transferButton.setText("Transfer");
 		transferButton.setCursor(Cursor.HAND);
-		
+
 		// TODO: Implement getting account number to transfer and fix getting account # from dialog
 		transferButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent actionEvent) {
-				TextInputDialog dialog = new TextInputDialog();
+				Dialog<String> dialog = new Dialog<String>();
 				dialog.setTitle("Transfer out of "+accountType+"("+accountID+")");
-				dialog.setContentText("Enter other account number:");
-				dialog.setContentText("Enter transfer amount:");
+				dialog.setHeaderText("Transfer money!!!!!");
 
-				Optional<String> amount = dialog.showAndWait();
-				if (amount.isPresent()) {
-					Double amountAsDouble = Double.valueOf(amount.get());
-					// check for negative withdrawal amounts
+				Label otherAccountLabel = new Label("Enter other account number: ");
+				Label transferAmountLabel = new Label("Enter transfer amount: ");
+				TextField otherAccountTextField = new TextField();
+				TextField transferAmountTextField = new TextField();
+
+				GridPane grid = new GridPane();
+				grid.add(otherAccountLabel, 1, 1);
+				grid.add(otherAccountTextField, 2, 1);
+				grid.add(transferAmountLabel, 1, 2);
+				grid.add(transferAmountTextField, 2, 2);
+				dialog.getDialogPane().setContent(grid);
+
+				ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
+				dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+
+				Optional<String> result = dialog.showAndWait();
+
+				if (result.isPresent()) {
+
+					int otherAccountAsInt = Integer.valueOf(otherAccountTextField.getText());
+					double amountAsDouble = Double.valueOf(transferAmountTextField.getText());
+
+					// check for negative transfer amounts
 					if (amountAsDouble < 0) {
 						throw new IllegalArgumentException("Please enter a positive transfer amount");
+						// cant transfer money more than current balance
+					} else if (amountAsDouble > accountBalance) {
+						throw new IllegalArgumentException("Please enter a transfer amount smaller than current balance");
 					} else {
 						accountBalance -= amountAsDouble;
-						//otherAccount.deposit(amount);
-						// TODO: must update window or something (make a function)
-						System.out.println("$"+amountAsDouble+" transfered from Account #"+accountID+".");
-						System.out.println("Total balance: $"+accountBalance);
+						accountBalanceText.setText("$"+decimalFormat.format(accountBalance));
+
 					}
+
+					AccountOverviewController.transfer(otherAccountAsInt, amountAsDouble);
+
 				}
 			}
 		});
-		
+
 		transferButton.setPrefHeight(22.0);
 		transferButton.setPrefWidth(159.0);
 		transferButton.setLayoutX(387.667);
@@ -159,57 +172,18 @@ public class BankAccount {
 		accountNumberText.setTextAlignment(TextAlignment.CENTER);
 		accountNumberText.setFont(Font.font ("Times New Roman", 20));
 
-		Text accountBalanceText = new Text("$"+decimalFormat.format(accountBalance));
+		accountBalanceText = new Text("$"+decimalFormat.format(accountBalance));
 		accountBalanceText.setFill(Color.WHITE);
 		accountBalanceText.setLayoutX(454.0);
 		accountBalanceText.setLayoutY(34.0);
 		accountBalanceText.setTextAlignment(TextAlignment.CENTER);
 		accountBalanceText.setFont(Font.font ("Times New Roman", 20));
 
-		// TODO: Make an X text to delete the account, a dialog pops up
-		// that requires you to enter the accountID to confirm to delete
-		accountDeleteText = new Text("X");
-		accountDeleteText.setFill(Color.WHITE);
-		accountDeleteText.setCursor(Cursor.HAND);
-		accountDeleteText.setId("deleteAccountText");
-		accountDeleteText.setLayoutX(560.0);
-		accountDeleteText.setLayoutY(20.0);
-		accountDeleteText.setTextAlignment(TextAlignment.CENTER);
-		accountDeleteText.setFont(Font.font ("Arial", 20));
-
-		this.deleteAccountClickListener();
-
 		bankAccount.getChildren().addAll(
-				backgroundRectangle,depositButton, withdrawButton, transferButton, accountTypeText, accountNumberText, accountBalanceText, accountDeleteText);
+				backgroundRectangle,depositButton, withdrawButton, transferButton, accountTypeText, accountNumberText, accountBalanceText);
 
 		return bankAccount;
 	}
-
-	public void deleteAccountClickListener() {
-		accountDeleteText.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent actionEvent) {
-				// remove entire row with confirmation
-				TextInputDialog dialog = new TextInputDialog();
-				dialog.setTitle("Delete Account");
-				dialog.setHeaderText("Are you sure you want to delete account "+accountID+"?");
-				dialog.setContentText("Please confirm the account number:");
-
-				Optional<String> input = dialog.showAndWait();
-				if (input.isPresent()) {
-					if (input.get().equals(Integer.toString(accountID))) {
-						// delete that row
-						System.out.println("Account "+accountID+" deleted.");
-						// click from that row
-					}
-				}
-
-			}
-		});
-	}
-
-	// TODO: Create Dialog boxes for each action and make exceptions visible in GUI
 
 	public void deposit(double amount) {
 		// check for negative deposit amounts
@@ -217,9 +191,13 @@ public class BankAccount {
 			throw new IllegalArgumentException("Please enter a positive deposit amount");
 		} else {
 			accountBalance += amount;
+			accountBalanceText.setText("$"+decimalFormat.format(accountBalance));
+			//System.out.println("$"+amountAsDouble+" deposited into Account #"+accountID+".");
+			//System.out.println("Total balance: $"+accountBalance);
 		}
 	}
 
+	// TODO: cannot withdraw more than you have
 	public void withdraw(double amount) {
 
 		// check for negative withdraw amounts
@@ -227,22 +205,16 @@ public class BankAccount {
 			throw new IllegalArgumentException("Please enter a positive withdraw amount");
 		} else {
 			accountBalance -= amount;
+			accountBalanceText.setText("$"+decimalFormat.format(accountBalance));
+
 		}
 	}
+
 	public double getBalance() {
 		return accountBalance;
 	}
 
-	public void transfer(BankAccount otherAccount, double amount) {
-
-		// check for negative transfer amounts
-		if (amount < 0) {
-			throw new IllegalArgumentException("Please enter a positive transfer amount");
-		} else {
-			accountBalance -= amount;
-			otherAccount.deposit(amount);
-		}
-
+	public void setBalance(double accountBalance) {
+		accountBalanceText.setText("$"+decimalFormat.format(accountBalance));
 	}
-
 }

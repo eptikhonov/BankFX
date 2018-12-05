@@ -25,17 +25,17 @@ public class LoginController {
 	public static String username;
 	// called by FXMLLoader to initialize the controller
 	public void initialize() {
-		
+
 		// if login clicked, check username & password match SQL database, go to Account Overview.
 		// else, display error
 		login_btn.setOnAction(actionEvent ->  {
 
-			if (username_txtfld.getText().equals("eric") && password_txtfld.getText().equals("pass")) {
+			if (username_txtfld.getText().equals("LilRob") && password_txtfld.getText().equals("pass")) {
 
 				// go to next scene
 				try {
 					this.setUsername(username_txtfld.getText().toUpperCase());
-					
+
 					Parent accountOverviewParent = FXMLLoader.load(getClass().getResource("AccountOverview.fxml"));
 					Scene accountOverviewScene = new Scene(accountOverviewParent);
 					Stage accountOverviewStage = (Stage)  ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -59,11 +59,11 @@ public class LoginController {
 
 		});
 	}
-	
+
 	public void setUsername(String name) {
 		username = name;
 	}
-	
+
 	public static String getUsername() {
 		return username;
 	}
