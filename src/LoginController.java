@@ -30,7 +30,7 @@ public class LoginController {
 		// else, display error
 		login_btn.setOnAction(actionEvent ->  {
 
-			if (username_txtfld.getText().equals("LilRob") && password_txtfld.getText().equals("pass")) {
+			if (username_txtfld.getText().equals("erictik") && password_txtfld.getText().equals("pass")) {
 
 				// go to next scene
 				try {
