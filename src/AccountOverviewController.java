@@ -99,14 +99,13 @@ public class AccountOverviewController {
 						accountsGridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) == rowToDelete);
 
 						//System.out.println("Account "+pair.getKey()+" closed.");
+						maximumGridRows--;
 					}
 
 				}
 
 			}
 		});
-
-
 
 		logOff.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
