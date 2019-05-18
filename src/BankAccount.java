@@ -136,9 +136,12 @@ public class BankAccount {
 					// check for negative transfer amounts
 					if (amountAsDouble < 0) {
 						throw new IllegalArgumentException("Please enter a positive transfer amount");
-						// cant transfer money more than current balance
+						// don't transfer money more than current balance
 					} else if (amountAsDouble > accountBalance) {
 						throw new IllegalArgumentException("Please enter a transfer amount smaller than current balance");
+						// don't transfer if other account number is same other account number
+					} else if (accountID == otherAccountAsInt) { 
+						throw new IllegalArgumentException("Cannot transfer to self account");
 					} else {
 						accountBalance -= amountAsDouble;
 						accountBalanceText.setText("$"+decimalFormat.format(accountBalance));
